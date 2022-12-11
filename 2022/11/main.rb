@@ -73,11 +73,3 @@ i = 0
 end
 
 puts Monkey.list_monkey.map(&:nb).sort.reverse.take(2).reduce(1, :*)
-puts "Singe 0 : #{Monkey.get_monkey(0).nb}"
-puts "Singe 1 : #{Monkey.get_monkey(1).nb}"
-puts "Singe 2 : #{Monkey.get_monkey(2).nb}"
-puts "Singe 3 : #{Monkey.get_monkey(3).nb}"
-puts "Singe 4 : #{Monkey.get_monkey(4).nb}"
-puts "Singe 5 : #{Monkey.get_monkey(5).nb}"
-puts "Singe 6 : #{Monkey.get_monkey(6).nb}"
-puts "Singe 7 : #{Monkey.get_monkey(7).nb}"

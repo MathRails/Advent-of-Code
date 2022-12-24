@@ -28,48 +28,57 @@ class Monkey
   end
 end
 
-Monkey.list_monkey << Monkey.new(
-  [59, 65, 86, 56, 74, 57, 56],
-  'old * 17',
-  3,
-  3,
-  6,
-)
-Monkey.list_monkey << Monkey.new([63, 83, 50, 63, 56], 'old + 2', 13, 3, 0)
-Monkey.list_monkey << Monkey.new([93, 79, 74, 55], 'old + 1', 2, 0, 1)
-Monkey.list_monkey << Monkey.new(
-  [86, 61, 67, 88, 94, 69, 56, 91],
-  'old + 7',
-  1,
-  6,
-  7,
-)
-Monkey.list_monkey << Monkey.new([76, 50, 51], 'old * old', 19, 2, 5)
-Monkey.list_monkey << Monkey.new([77, 76], 'old + 8', 17, 2, 1)
-Monkey.list_monkey << Monkey.new([74], 'old * 2', 5, 4, 7)
-Monkey.list_monkey << Monkey.new([86, 85, 52, 86, 91, 95], 'old + 6', 7, 4, 5)
+PATTERN = Regexp.new(<<~REGEXP.strip)
+Monkey (?<id>\\d+):
+  Starting items: (?<items>[0-9 ,]+)
+  Operation: new = (?<operation>.*)
+  Test: divisible by (?<test>\\d+)
+    If true: throw to monkey (?<pass>\\d+)
+    If false: throw to monkey (?<fail>\\d+)
+REGEXP
 
-modulo = Monkey.list_monkey.reduce(1) { |acc, m| acc * m.divisible }
-i = 0
-10_000.times do
-  Monkey.list_monkey.each do |m|
-    m.item_list.each do |item|
-      m.nb += 1
-      worry_level = eval(m.operation.gsub('old', item.to_s))
+File
+  .read('input.txt')
+  .split("\n\n")
+  .each_with_object({}) do |definition, monkeys|
+    data = PATTERN.match(definition)
+    Monkey.list_monkey << Monkey.new(
+      data[:items].split(', ').map(&:to_i),
+      data[:operation],
+      data[:test].to_i,
+      data[:pass].to_i,
+      data[:fail].to_i,
+    )
+  end
 
-      # Part 1
-      # worry_level_by_3 = (worry_level / 3.0).floor
-      # if worry_level_by_3 % m.divisible == 0
-      # Part 2
+def solve(round, div)
+  round.times do
+    Monkey.list_monkey.each do |m|
+      m.item_list.each do |item|
+        m.nb += 1
+        worry_level = eval(m.operation.gsub('old', item.to_s))
 
-      if worry_level % modulo == 0
-        Monkey.get_monkey(m.divisble_true).item_list << worry_level
-      else
-        Monkey.get_monkey(m.divisble_false).item_list << worry_level
+        #part 1
+        # worry_level_div = worry_level / div
+        #part 2
+        worry_level_div = worry_level % div
+
+        if worry_level_div % m.divisible == 0
+          Monkey.get_monkey(m.divisble_true).item_list << worry_level_div
+        else
+          Monkey.get_monkey(m.divisble_false).item_list << worry_level_div
+        end
       end
+      m.item_list.clear
     end
-    m.item_list.clear
   end
 end
 
+# Part 1
+#solve(20, 3)
+#puts Monkey.list_monkey.map(&:nb).sort.reverse.take(2).reduce(1, :*)
+
+# Part 2
+div = Monkey.list_monkey.map { |m| m.divisible }.reduce(:*)
+solve(10_000, div)
 puts Monkey.list_monkey.map(&:nb).sort.reverse.take(2).reduce(1, :*)

@@ -1,5 +1,4 @@
 resultat1 = 0
-resultat2 = 0
 
 # id_card => nb copy
 card_owned = Hash.new(0)

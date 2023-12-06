@@ -28,6 +28,7 @@ dist = time_distance[1].join("").to_i
 # Solution 2 - non opti
 Benchmark.bm(20) do |bm|
   bm.report("Solution 2 - non opti:") do
+    #puts calc_race_win([[time], [dist]]).reduce(&:*)
     calc_race_win([[time], [dist]]).reduce(&:*)
   end
 
@@ -50,6 +51,7 @@ Benchmark.bm(20) do |bm|
         break
       end
     end
+    #puts (y - x + 1)
   end
 end
 

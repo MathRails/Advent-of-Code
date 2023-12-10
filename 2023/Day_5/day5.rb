@@ -41,36 +41,21 @@ def resultat1(seeds, maps)
 end
 
 def resultat2(seeds_range, maps)
-  ranges = []
   res = Hash.new
   seeds_range.each do |seed_range|
-    maps.each do |_, map_ranges|
-      map_ranges.each do |map|
-        is_in_range =
-          seed_range[0] >= map[:src] &&
-            (seed_range[0] + seed_range[1] - 1) <= map[:lgth] + map[:src]
-        if is_in_range
-          puts map
-          new_range =
-            (
-              ([seed_range[0], map[:src]].max)..[
-                map[:lgth] + map[:src],
-                seed_range[1] + seed_range[0],
-              ].min
-            )
-          puts new_range
-          puts
-          ranges << new_range
+    (seed_range[0]..(seed_range[0] + seed_range[1])).each do |seed|
+      find = seed
+      maps.each do |_, map_ranges|
+        map_ranges.each do |range|
+          if find >= range[:src] && find <= range[:lgth] + range[:src]
+            find = range[:dest] + (find - range[:src])
+            break
+          end
         end
       end
+      res[seed] = find
     end
   end
-  ranges.uniq!
-  ranges.each do |rng|
-    puts rng
-    #res = res.merge(resultat1(rng.to_a, maps))
-  end
-
   res
 end
 
